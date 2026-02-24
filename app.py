@@ -1,35 +1,42 @@
 import streamlit as st
 
-# --- CONFIGURAÇÃO VISUAL (LETRAS PRETAS E FUNDO BRANCO) ---
+# --- CONFIGURAÇÃO VISUAL ---
 st.set_page_config(page_title="Ficha Podológica - Elaine Souza", layout="wide")
 
 st.markdown("""
     <style>
-    /* Fundo da página branco */
+    /* Fundo geral branco */
     .stApp { background-color: white; }
     
-    /* Forçar todas as letras (textos e labels) para PRETO */
-    html, body, [data-testid="stWidgetLabel"], .stMarkdown, p, span {
+    /* Nomes dos campos (Labels) em PRETO */
+    [data-testid="stWidgetLabel"] p {
         color: black !important;
+        font-weight: bold !important;
+        font-size: 1.1em !important;
     }
-    
-    /* Títulos em Azul Escuro para destaque */
-    h1, h2, h3 { color: #1E3A8A !important; }
-    
-    /* Caixas de entrada com texto preto e borda visível */
+
+    /* CAIXA DE DIGITAÇÃO: Fundo Azul e Letra BRANCA */
     input, textarea {
-        color: black !important;
-        border: 1px solid #1E3A8A !important;
+        background-color: #1E3A8A !important; /* Azul Escuro */
+        color: white !important; /* Letra Branca ao digitar */
+        border-radius: 5px !important;
     }
-    
-    /* Botão Verde com letra branca */
+
+    /* Cor do texto dentro da caixa enquanto digita */
+    .stTextInput div div input, .stTextArea div div textarea {
+        color: white !important;
+    }
+
+    /* Títulos em Azul */
+    h1, h2, h3 { color: #1E3A8A !important; }
+
+    /* Botão Verde */
     .stButton>button {
         background-color: #10B981 !important;
         color: white !important;
         font-weight: bold;
         width: 100%;
         height: 3em;
-        border-radius: 8px;
     }
     </style>
     """, unsafe_allow_html=True)
@@ -38,8 +45,7 @@ st.title("🏥 Ficha de Avaliação Podológica")
 st.subheader("Profissional Responsável: Elaine Souza")
 st.divider()
 
-# Início do Formulário
-with st.form("ficha_podologia"):
+with st.form("ficha_podologia_v3"):
     
     st.markdown("### 📝 1. Identificação do Paciente")
     nome = st.text_input("Nome Completo:")
@@ -57,7 +63,7 @@ with st.form("ficha_podologia"):
     st.divider()
 
     st.markdown("### 👟 2. Hábitos e Estilo de Vida")
-    st.write("Trabalha:")
+    st.write("**Trabalha:**")
     c_tr1, c_tr2, c_tr3, c_tr4, c_tr5 = st.columns(5)
     t_pe = c_tr1.checkbox("Em pé")
     t_sentado = c_tr2.checkbox("Sentado")
@@ -72,7 +78,7 @@ with st.form("ficha_podologia"):
     st.divider()
 
     st.markdown("### 🩹 3. Curativos e Avaliação")
-    st.write("Curativos:")
+    st.write("**Curativos:**")
     cur_cols = st.columns(5)
     cur1 = cur_cols[0].text_input("1º")
     cur2 = cur_cols[1].text_input("2º")
@@ -90,7 +96,7 @@ with st.form("ficha_podologia"):
     st.divider()
 
     st.markdown("### 🩺 4. Condições e Patologias")
-    st.write("Assinale as opções que se aplicam:")
+    st.write("**Assinale as opções que se aplicam:**")
     
     doencas = [
         "Diabetes", "Hipertensão", "Cardíaco", "Anidrose", "Bromidrose", 
@@ -113,7 +119,7 @@ with st.form("ficha_podologia"):
     ass_paciente = st.text_input("Assinatura do Paciente (Nome):")
     st.text_input("Profissional Responsável:", value="Elaine Souza", disabled=True)
 
-    # BOTÃO DE ENVIAR (Obrigatório para o formulário funcionar)
+    # BOTÃO SALVAR
     botao_salvar = st.form_submit_button("SALVAR FICHA DE AVALIAÇÃO")
 
     if botao_salvar:
