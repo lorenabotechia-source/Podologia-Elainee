@@ -1,99 +1,98 @@
 import streamlit as st
-import sqlite3
 
-# --- CONFIGURAÇÃO VISUAL ---
+# --- CONFIGURAÇÃO VISUAL (LETRAS PRETAS E FUNDO BRANCO) ---
 st.set_page_config(page_title="Ficha Podológica - Elaine Souza", layout="wide")
 
 st.markdown("""
     <style>
-    .stApp { background-color: #FFFFFF; }
-    h1, h2, h3 { color: #1E3A8A; font-family: 'Arial'; }
-    label { font-weight: bold; color: #1E3A8A; font-size: 1.1em; }
-    .stButton>button { background-color: #10B981; color: white; font-weight: bold; width: 100%; border-radius: 8px; }
+    /* Fundo da página branco */
+    .stApp { background-color: white; }
+    
+    /* Forçar todas as letras (textos e labels) para PRETO */
+    html, body, [data-testid="stWidgetLabel"], .stMarkdown, p, span {
+        color: black !important;
+    }
+    
+    /* Títulos em Azul Escuro para destaque */
+    h1, h2, h3 { color: #1E3A8A !important; }
+    
+    /* Caixas de entrada com texto preto e borda visível */
+    input, textarea {
+        color: black !important;
+        border: 1px solid #1E3A8A !important;
+    }
+    
+    /* Botão Verde com letra branca */
+    .stButton>button {
+        background-color: #10B981 !important;
+        color: white !important;
+        font-weight: bold;
+        width: 100%;
+        height: 3em;
+        border-radius: 8px;
+    }
     </style>
     """, unsafe_allow_html=True)
-
-# --- BANCO DE DADOS ---
-def init_db():
-    conn = sqlite3.connect('podologia.db')
-    c = conn.cursor()
-    c.execute('''CREATE TABLE IF NOT EXISTS pacientes (id INTEGER PRIMARY KEY AUTOINCREMENT, nome TEXT)''')
-    conn.commit()
-    conn.close()
-
-init_db()
 
 st.title("🏥 Ficha de Avaliação Podológica")
 st.subheader("Profissional Responsável: Elaine Souza")
 st.divider()
 
-with st.form("ficha_detalhada"):
-    # IDENTIFICAÇÃO
-    st.markdown("### 📝 Dados de Identificação")
-    nome = st.text_input("Nome completo do paciente:")
-    data_nasc = st.text_input("Data de nascimento (caixa de texto):")
-    endereco = st.text_input("Endereço completo (caixa de texto):")
+# Início do Formulário
+with st.form("ficha_podologia"):
+    
+    st.markdown("### 📝 1. Identificação do Paciente")
+    nome = st.text_input("Nome Completo:")
+    data_nasc = st.text_input("Data de Nascimento:")
+    endereco = st.text_input("Endereço Completo:")
     
     col_inf1, col_inf2 = st.columns(2)
-    bairro = col_inf1.text_input("Bairro (caixa de texto):")
-    cidade = col_inf2.text_input("Cidade (caixa de texto):")
-    cep = col_inf1.text_input("CEP (caixa de texto):")
-    telefone = col_inf2.text_input("Telefone (caixa de texto):")
+    bairro = col_inf1.text_input("Bairro:")
+    cidade = col_inf2.text_input("Cidade:")
+    cep = col_inf1.text_input("CEP:")
+    telefone = col_inf2.text_input("Telefone:")
     
-    profissao = st.text_input("Profissão (caixa de texto):")
+    profissao = st.text_input("Profissão:")
 
     st.divider()
 
-    # HÁBITOS
-    st.markdown("### 👟 Hábitos e Estilo de Vida")
-    st.write("Trabalha: (assinale as opções)")
-    col_tr1, col_tr2, col_tr3, col_tr4, col_tr5 = st.columns(5)
-    t_pe = col_tr1.checkbox("Em pé")
-    t_sentado = col_tr2.checkbox("Sentado")
-    t_andando = col_tr3.checkbox("Andando")
-    t_destro = col_tr4.checkbox("Destro")
-    t_canhoto = col_tr5.checkbox("Canhoto")
+    st.markdown("### 👟 2. Hábitos e Estilo de Vida")
+    st.write("Trabalha:")
+    c_tr1, c_tr2, c_tr3, c_tr4, c_tr5 = st.columns(5)
+    t_pe = c_tr1.checkbox("Em pé")
+    t_sentado = c_tr2.checkbox("Sentado")
+    t_andando = c_tr3.checkbox("Andando")
+    t_destro = c_tr4.checkbox("Destro")
+    t_canhoto = c_tr5.checkbox("Canhoto")
 
-    st.write("Pratica algum esporte?")
-    col_esp1, col_esp2 = st.columns(2)
-    esp_sim = col_esp1.checkbox("Sim (Esporte)")
-    esp_nao = col_esp2.checkbox("Não (Esporte)")
-
-    calcado = st.text_input("Calçado preferido?")
-    
-    st.write("Cirurgias anteriores no pé?")
-    col_cir1, col_cir2 = st.columns(2)
-    cir_sim = col_cir1.checkbox("Sim (Cirurgia)")
-    cir_nao = col_cir2.checkbox("Não (Cirurgia)")
-
-    medicamentos = st.text_input("Usa medicamentos? Se sim, qual? (caixa de texto):")
+    esporte = st.text_input("Pratica algum esporte? Qual?")
+    calcado = st.text_input("Qual o seu calçado preferido?")
+    medicamentos = st.text_input("Usa medicamentos? Se sim, quais?")
 
     st.divider()
 
-    # CURATIVOS
-    st.markdown("### 🩹 Curativos")
-    col_cur1, col_cur2, col_cur3, col_cur4, col_cur5 = st.columns(5)
-    cur1 = col_cur1.text_input("Curativo: 1º")
-    cur2 = col_col2.text_input("Curativo: 2º") if 'col_col2' not in locals() else col_cur2.text_input("Curativo: 2º")
-    cur3 = col_cur3.text_input("Curativo: 3º")
-    cur4 = col_cur4.text_input("Curativo: 4º")
-    cur5 = col_cur5.text_input("Curativo: 5º")
+    st.markdown("### 🩹 3. Curativos e Avaliação")
+    st.write("Curativos:")
+    cur_cols = st.columns(5)
+    cur1 = cur_cols[0].text_input("1º")
+    cur2 = cur_cols[1].text_input("2º")
+    cur3 = cur_cols[2].text_input("3º")
+    cur4 = cur_cols[3].text_input("4º")
+    cur5 = cur_cols[4].text_input("5º")
 
-    st.divider()
-
-    # AVALIAÇÃO TÉCNICA
-    st.markdown("### 🔬 Avaliação Técnica")
+    st.write("")
     granuloma = st.text_input("Granuloma telangiectásico:")
     ortese = st.text_input("Órtese:")
     artelho = st.text_input("Artelho:")
-    inicio_t = st.text_input("Início:")
-    final_t = st.text_input("Final:")
+    inicio_t = st.text_input("Início do tratamento:")
+    final_t = st.text_input("Final do tratamento:")
 
     st.divider()
 
-    # OPÇÕES DE SAÚDE E PATOLOGIAS
-    st.markdown("### 🩺 Condições e Patologias (Assinale as opções)")
-    lista_doencas = [
+    st.markdown("### 🩺 4. Condições e Patologias")
+    st.write("Assinale as opções que se aplicam:")
+    
+    doencas = [
         "Diabetes", "Hipertensão", "Cardíaco", "Anidrose", "Bromidrose", 
         "Pé Cavo", "Pé Plano", "Pé Equino Onicogrifose", "Halux Valgus D-E", 
         "Halux Varo D-E", "Calo Dorsal", "Calo de Milet", "Calo Subungueal", 
@@ -102,14 +101,20 @@ with st.form("ficha_detalhada"):
         "Calosidade", "Onicomicose"
     ]
     
-    col_pat1, col_pat2, col_pat3 = st.columns(3)
-    for i, pat in enumerate(lista_doencas):
-        if i % 3 == 0: col_pat1.checkbox(pat)
-        elif i % 3 == 1: col_pat2.checkbox(pat)
-        else: col_pat3.checkbox(pat)
+    col_p1, col_p2, col_p3 = st.columns(3)
+    for i, pato in enumerate(doencas):
+        if i % 3 == 0: col_p1.checkbox(pato)
+        elif i % 3 == 1: col_p2.checkbox(pato)
+        else: col_p3.checkbox(pato)
 
     st.divider()
-    st.text_input("Nome da Profissional:", value="Elaine Souza", disabled=True)
     
-    if st.form_submit_button("SALVAR DADOS DA FICHA"):
+    st.markdown("### 🖋️ 5. Assinaturas")
+    ass_paciente = st.text_input("Assinatura do Paciente (Nome):")
+    st.text_input("Profissional Responsável:", value="Elaine Souza", disabled=True)
+
+    # BOTÃO DE ENVIAR (Obrigatório para o formulário funcionar)
+    botao_salvar = st.form_submit_button("SALVAR FICHA DE AVALIAÇÃO")
+
+    if botao_salvar:
         st.success(f"Ficha de {nome} salva com sucesso!")
