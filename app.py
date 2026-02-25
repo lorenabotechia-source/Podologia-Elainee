@@ -7,7 +7,7 @@ from datetime import date
 # --- CONFIGURAÇÃO DA PÁGINA ---
 st.set_page_config(page_title="Ficha Digital Elaine Souza", layout="wide")
 
-# --- ESTILO VISUAL (Cores Elaine: Branco, Azul Marinho e Verde) ---
+# --- ESTILO VISUAL (Fundo branco, campos azuis, letras pretas) ---
 st.markdown("""
     <style>
     .stApp { background-color: white; }
@@ -20,7 +20,7 @@ st.markdown("""
     </style>
     """, unsafe_allow_html=True)
 
-# --- CREDENCIAIS DE ACESSO DIRETO ---
+# --- CREDENCIAIS DE ACESSO DIRETO (Evita erro de TOML) ---
 conf = {
     "spreadsheet": "https://docs.google.com/spreadsheets/d/1s9dynrXK6N51AA5dI5THubj6aOme8PwLajdGh8os850/edit",
     "type": "service_account",
@@ -41,27 +41,25 @@ st.title("🏥 Ficha de Avaliação Podológica Digital")
 st.subheader("Profissional Responsável: Elaine Souza")
 st.divider()
 
-# --- INÍCIO DO FORMULÁRIO COMPLETO ---
-with st.form("ficha_completa", clear_on_submit=True):
+# --- FORMULÁRIO COMPLETO ---
+with st.form("ficha_digital_completa", clear_on_submit=True):
     
-    st.markdown("### 📝 1. Identificação do Paciente")
-    nome = st.text_input("Nome Completo:")
+    st.markdown("### 📝 1. Identificação")
+    nome = st.text_input("Nome Completo do Paciente:")
     
     col_id1, col_id2 = st.columns(2)
-    data_nasc = col_id1.date_input("Data de Nascimento:", value=None, format="DD/MM/YYYY", min_value=date(1920, 1, 1))
-    telefone = col_id2.text_input("Telefone de Contato:")
+    data_nasc = col_id1.date_input("Data de Nascimento (Calendário):", value=None, format="DD/MM/YYYY", min_value=date(1920, 1, 1))
+    telefone = col_id2.text_input("Telefone:")
     
-    endereco = st.text_input("Endereço Residencial:")
-    
-    col_loc1, col_loc2, col_loc3 = st.columns(3)
-    bairro = col_loc1.text_input("Bairro:")
-    cidade = col_loc2.text_input("Cidade:")
-    cep = col_loc3.text_input("CEP:")
+    endereco = st.text_input("Endereço Completo:")
+    col_l1, col_l2, col_l3 = st.columns(3)
+    bairro = col_l1.text_input("Bairro:")
+    cidade = col_l2.text_input("Cidade:")
+    cep = col_l3.text_input("CEP:")
     
     profissao = st.text_input("Profissão:")
 
     st.divider()
-
     st.markdown("### 👟 2. Hábitos e Histórico")
     col_hab1, col_hab2, col_hab3, col_hab4, col_hab5 = st.columns(5)
     t_pe = col_hab1.checkbox("Em pé")
@@ -70,25 +68,22 @@ with st.form("ficha_completa", clear_on_submit=True):
     t_destro = col_hab4.checkbox("Destro")
     t_canhoto = col_hab5.checkbox("Canhoto")
 
-    esporte = st.text_input("Pratica algum esporte? Qual?")
-    calcado = st.text_input("Calçado mais utilizado (nº e tipo):")
-    medicamentos = st.text_area("Usa medicamentos? Se sim, quais?")
+    esporte = st.text_input("Pratica esporte? Qual?")
+    calcado = st.text_input("Calçado (nº e tipo):")
+    medicamentos = st.text_area("Usa medicamentos? (Quais?)")
 
     st.divider()
-
     st.markdown("### 🩹 3. Avaliação e Tratamento")
-    col_trat1, col_trat2 = st.columns(2)
-    data_inicio = col_trat1.date_input("Início do Tratamento:", format="DD/MM/YYYY")
-    data_final = col_trat2.date_input("Previsão de Finalização:", format="DD/MM/YYYY")
+    col_t1, col_t2 = st.columns(2)
+    dt_inicio = col_t1.date_input("Início do Tratamento:", format="DD/MM/YYYY")
+    dt_final = col_t2.date_input("Previsão de Alta:", format="DD/MM/YYYY")
     
-    st.write("Registros de Curativos:")
-    col_cur1, col_cur2, col_cur3 = st.columns(3)
-    cur1 = col_cur1.text_input("Curativo 1")
-    cur2 = col_cur2.text_input("Curativo 2")
-    cur3 = col_cur3.text_input("Curativo 3")
+    col_c1, col_c2, col_c3 = st.columns(3)
+    cur1 = col_c1.text_input("Curativo 1")
+    cur2 = col_c2.text_input("Curativo 2")
+    cur3 = col_c3.text_input("Curativo 3")
 
     st.divider()
-
     st.markdown("### 🩺 4. Condições e Patologias")
     lista_doencas = [
         "Diabetes", "Hipertensão", "Cardíaco", "Anidrose", "Bromidrose", 
@@ -98,81 +93,45 @@ with st.form("ficha_completa", clear_on_submit=True):
         "Calo Mole", "Calo Miliar", "Calo Vascular", "Calo Neuro Vascular", 
         "Calosidade", "Onicomicose"
     ]
-    
     col_p1, col_p2, col_p3 = st.columns(3)
     selecionados = []
-    for i, pato in enumerate(lista_doencas):
+    for i, d in enumerate(lista_doencas):
         if i % 3 == 0: 
-            if col_p1.checkbox(pato): selecionados.append(pato)
+            if col_p1.checkbox(d): selecionados.append(d)
         elif i % 3 == 1: 
-            if col_p2.checkbox(pato): selecionados.append(pato)
+            if col_p2.checkbox(d): selecionados.append(d)
         else: 
-            if col_p3.checkbox(pato): selecionados.append(pato)
+            if col_p3.checkbox(d): selecionados.append(d)
 
     st.divider()
-    obs_gerais = st.text_area("Observações Técnicas Gerais:")
+    obs = st.text_area("Observações Técnicas Gerais:")
 
-    st.divider()
-    # --- ÁREAS DE ASSINATURA DIGITAL ---
-    st.markdown("### 🖋️ Assinaturas Digitais (Assine na tela)")
-    
-    col_canvas1, col_canvas2 = st.columns(2)
-    
-    with col_canvas1:
+    st.markdown("### 🖋️ Assinaturas Digitais (Assine com o dedo)")
+    col_ass1, col_ass2 = st.columns(2)
+    with col_ass1:
         st.write("Assinatura do Paciente:")
-        st_canvas(
-            fill_color="rgba(255, 255, 255, 0)",
-            stroke_width=2, stroke_color="black",
-            background_color="white", height=150, key="canvas_paciente"
-        )
-        
-    with col_canvas2:
+        st_canvas(fill_color="white", stroke_width=2, stroke_color="black", background_color="white", height=120, key="can_p")
+    with col_ass2:
         st.write("Assinatura Elaine Souza:")
-        st_canvas(
-            fill_color="rgba(255, 255, 255, 0)",
-            stroke_width=2, stroke_color="blue",
-            background_color="white", height=150, key="canvas_elaine"
-        )
+        st_canvas(fill_color="white", stroke_width=2, stroke_color="blue", background_color="white", height=120, key="can_e")
 
-    st.divider()
-
-    # BOTÃO SALVAR
-    submit = st.form_submit_button("SALVAR FICHA DIGITAL E ENVIAR PARA PLANILHA")
-
-    if submit:
+    if st.form_submit_button("SALVAR FICHA DIGITAL"):
         if nome:
             try:
-                # 1. Tenta ler a planilha existente
-                try:
-                    df_antigo = conn.read(worksheet="Sheet1")
-                except:
-                    df_antigo = pd.DataFrame()
-
-                # 2. Organiza TODOS os dados
-                novos_dados = pd.DataFrame([{
-                    "Nome": nome, "Nascimento": str(data_nasc), "Telefone": telefone,
-                    "Endereco": endereco, "Bairro": bairro, "Cidade": cidade, "CEP": cep,
-                    "Profissao": profissao, 
-                    "Habitos": f"Pé:{t_pe}/Sent:{t_sentado}/And:{t_andando}/Lado:{'D' if t_destro else 'C'}",
-                    "Esporte": esporte, "Calcado": calcado, "Medicamentos": medicamentos,
-                    "Inicio": str(data_inicio), "Final": str(data_final), 
-                    "Curativos": f"{cur1}, {cur2}, {cur3}", 
-                    "Patologias": ", ".join(selecionados), 
-                    "Observacoes": obs_gerais, 
-                    "Status": "Assinado Digitalmente",
-                    "Data_Registro": str(date.today())
+                nova_linha = pd.DataFrame([{
+                    "Nome": nome, "Nascimento": str(data_nasc), "Telefone": telefone, "CEP": cep,
+                    "Curativos": f"{cur1}, {cur2}, {cur3}", "Patologias": ", ".join(selecionados),
+                    "Obs": obs, "Data": str(date.today()), "Assinatura": "Digital"
                 }])
-
-                # 3. Concatena e envia
-                df_final = pd.concat([df_antigo, novos_dados], ignore_index=True)
+                df_antigo = conn.read(worksheet="Sheet1")
+                df_final = pd.concat([df_antigo, nova_linha], ignore_index=True)
                 conn.update(worksheet="Sheet1", data=df_final)
-                
-                st.success(f"✅ Ficha de {nome} salva com sucesso no banco de dados!")
+                st.success(f"✅ Ficha de {nome} salva!")
                 st.balloons()
             except Exception as e:
-                st.error(f"Erro ao salvar: {e}")
+                st.error(f"Erro: {e}")
         else:
-            st.warning("⚠️ O campo Nome é obrigatório para registrar a ficha.")
+            st.warning("Nome obrigatório!")
 
 
 
